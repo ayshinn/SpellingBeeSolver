@@ -23,6 +23,24 @@ def find_valid_words(words, letters):
     return valid_words
 
 
+def sort_words(words, special_letters):
+    """
+    Given a list of words and a word containing 7 special letters,
+    returns a new list sorted by value of word descending.
+    The value of a word is as follows:
+    If the word is length 4: 1 point
+    If the word is length N where N > 4: N points
+    Additionally, if the word contains all of the special letters, it gets an extra 7 points.
+    """
+    def word_value(word):
+        value = len(word) if len(word) > 4 else 1
+        if all(letter in word for letter in special_letters):
+            value += 7
+        return value
+
+    return sorted(words, key=word_value, reverse=True)
+
+
 def main():
     dictionary_path = "dictionary.txt"
     letters = input("Enter 7 distinct letters (e.g. 'abcdefg'): ").strip().lower()
@@ -33,9 +51,15 @@ def main():
 
     words = load_dictionary(dictionary_path)
     valid_words = find_valid_words(words, letters)
+    # valid_words = sort_words(valid_words, special_letters=letters)
 
     print(f"\nValid words using '{letters}' (must include '{letters[0]}'):\n")
-    for word in sorted(valid_words, key=lambda w: (-len(w), w)):
+    for word in sort_words(valid_words, special_letters=letters):
+        print(word)
+
+    print(f"\nWords that use all letters '{letters}':\n")
+
+    for word in [word for word in valid_words if all(letter in word for letter in letters)]:
         print(word)
 
 
